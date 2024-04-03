@@ -3,8 +3,8 @@ import socket
 def main():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
-        client_socket.connect(("127.0.0.1",12345))
-        print(f"Connected to server at 127.0.0.1:12345")
+        client_socket.connect(("127.0.0.1",1194))
+        print(f"Connected to server at 127.0.0.1:1194")
         # TODO Authentication: Send an authentication token or credentials
         # For now, we'll just send a test message to the server
         client_socket.send(b"Hello from client!")
