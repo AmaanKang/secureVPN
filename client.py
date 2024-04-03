@@ -5,6 +5,8 @@ def main():
     try:
         client_socket.connect(("127.0.0.1",12345))
         print(f"Connected to server at 127.0.0.1:12345")
+        # TODO Authentication: Send an authentication token or credentials
+        # For now, we'll just send a test message to the server
         client_socket.send(b"Hello from client!")
         response = client_socket.recv(1024)
         print(f"Received from server: {response.decode('utf-8')}")

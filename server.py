@@ -3,6 +3,9 @@ import threading
 
 def handle_client(client_socket):
     try:
+        # TODO: Authentication: You can implement your own logic here
+        # For example, check if the client sends a valid token or username/password.
+        # For now, we'll assume any client is authenticated.
         while True:
             request = client_socket.recv(1024)
             if not request:
