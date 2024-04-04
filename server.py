@@ -1,17 +1,34 @@
 import socket
 import threading
+import hashlib
+from cryptography.fernet import Fernet
+
+# This is a test secret key.
+# TODO Improve the authentication and encryption in this file.
+SECRET_KEY = Fernet.generate_key()
+fernet = Fernet(SECRET_KEY)
 
 def handle_client(client_socket):
     try:
-        # TODO: Authentication: You can implement your own logic here
-        # For example, check if the client sends a valid token or username/password.
-        # For now, we'll assume any client is authenticated.
+        # Receive the authentication token from the client
+        token = client_socket.recv(1024)
+        # Check if the token matches the hashed secret key
+        if hashlib.sha256(token).digest() != hashlib.sha256(SECRET_KEY).digest():
+            print("Authentication failed")
+            return
+        print("Authentication successful")
         while True:
             request = client_socket.recv(1024)
             if not request:
                 break
             else:
-                client_socket.send(request)
+                # Decrypt the request
+                decrypted_request = fernet.decrypt(request)
+                print(f"Received: {decrypted_request}")
+
+                # Encrypt the response
+                response = fernet.encrypt(b"Hello from server!")
+                client_socket.send(response)
     except Exception as e:
         print(f"Error handling client: {e}")
     finally:
@@ -20,9 +37,9 @@ def handle_client(client_socket):
 def main():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind(("0.0.0.0",1194))
-    server_socket.listen(1)
+    server_socket.listen(5)
 
-    print("Server is listening on port 12345....")
+    print("Server is listening on port 1194....")
 
     while True:
         client_socket,client_address = server_socket.accept()
