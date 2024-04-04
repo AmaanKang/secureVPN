@@ -2,11 +2,14 @@ import socket
 import threading
 import hashlib
 from cryptography.fernet import Fernet
+import base64
 
 # This is a test secret key.
 # TODO Improve the authentication and encryption in this file.
-SECRET_KEY = Fernet.generate_key()
-fernet = Fernet(SECRET_KEY)
+with open('keys/serverKey.txt','rb') as file:
+    SECRET_KEY = file.read()
+
+fernet = Fernet(base64.urlsafe_b64encode(SECRET_KEY))
 
 def handle_client(client_socket):
     try:
@@ -17,6 +20,7 @@ def handle_client(client_socket):
             print("Authentication failed")
             return
         print("Authentication successful")
+
         while True:
             request = client_socket.recv(1024)
             if not request:
@@ -24,7 +28,7 @@ def handle_client(client_socket):
             else:
                 # Decrypt the request
                 decrypted_request = fernet.decrypt(request)
-                print(f"Received: {decrypted_request}")
+                print(f"Received: {decrypted_request.decode('utf8')}")
 
                 # Encrypt the response
                 response = fernet.encrypt(b"Hello from server!")

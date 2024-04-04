@@ -1,11 +1,14 @@
 import socket
 import hashlib
 from cryptography.fernet import Fernet
+import base64
 
 # This is a test secret key.
 # TODO Improve the authentication and encryption in this file.
-SECRET_KEY = Fernet.generate_key()
-fernet = Fernet(SECRET_KEY)
+with open('keys/clientKey.txt','rb') as file:
+    SECRET_KEY = file.read()
+
+fernet = Fernet(base64.urlsafe_b64encode(SECRET_KEY))
 
 def main():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
