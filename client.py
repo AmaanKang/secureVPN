@@ -11,6 +11,8 @@ with open('keys/clientKey.txt','rb') as file:
 fernet = Fernet(base64.urlsafe_b64encode(SECRET_KEY))
 
 # ISSUE - Import Connection is failing on OpenVPN.
+# openssl req -new -nodes -out client.csr -config client.cnf
+# openssl x509 -req -in client.csr -CA root.crt -CAkey root.key -CAcreateserial -out client.crt -days 365 -extensions v3_req -extfile client.cnf
 def main():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
